@@ -14,7 +14,8 @@ namespace Vidly.Models
         public string Name { get; set; }
         public bool IsSubscribedToNewsletter { get; set; }
         public MembershipType MembershipType { get; set; }
-        public byte MembershipTypeId { get; set; } //tratada como FK
+        public byte MembershipTypeId { get; set; } //tratada como FK por el EF
+        public DateTime? Birthday { get; set; }
 
     }
 }
