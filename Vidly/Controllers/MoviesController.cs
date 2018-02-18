@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using Vidly.ViewModels;
 using System;
+using System.Net;
 
 namespace Vidly.Controllers
 {
@@ -40,7 +41,10 @@ namespace Vidly.Controllers
             var genres = _context.Genres.ToList();
             var viewModel = new MovieFormViewModel
             {
-                Genres = genres
+                Genres = genres,
+
+                //inicializar para que tenga Id = 0
+                //Movie = new Movie(),
             };
 
             return View("MovieForm", viewModel);
@@ -64,6 +68,21 @@ namespace Vidly.Controllers
         [HttpPost]
         public ActionResult Save(Movie movie)
         {
+            if (!ModelState.IsValid)
+            {
+                var message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, message);
+
+                //var viewModel = new MovieFormViewModel
+                //{
+                //    Movie = movie,
+                //    Genres = _context.Genres.ToList()
+                //};
+                //return View("MovieForm", viewModel);
+            }
+
             if (movie.Id == 0)
             {
                 movie.DateAdded = DateTime.Today;

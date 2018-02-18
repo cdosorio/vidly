@@ -10,7 +10,7 @@ namespace Vidly.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter customer's name")]
         [StringLength(255)]
         public string Name { get; set; }
 
@@ -22,7 +22,7 @@ namespace Vidly.Models
         public byte MembershipTypeId { get; set; } //tratada como FK por el EF
 
         [Display(Name = "Date of Birth")]
+        [Min18YearsIfaMember]
         public DateTime? Birthday { get; set; }
-
     }
 }
