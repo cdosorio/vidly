@@ -19,10 +19,14 @@ namespace Vidly.Controllers
         }
 
         public ViewResult Index()
-        {            
-            var movies = _context.Movies.Include(c => c.Genre).ToList();
+        {  
+            //Ya no necesita pasar el modelo a la vista, porque la vista obtiene la data desde la API .
+            //var movies = _context.Movies.Include(c => c.Genre).ToList();
 
-            return View(movies);
+            if (User.IsInRole(RoleName.CanManageMovies))
+                return View("List");
+
+            return View("ReadOnlyList");
         }
 
         public ActionResult Details(int id)
@@ -35,6 +39,7 @@ namespace Vidly.Controllers
             return View(movie);
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
             //Para el dropdown
