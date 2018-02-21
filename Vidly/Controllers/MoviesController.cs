@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Vidly.ViewModels;
 using System;
 using System.Net;
+using System.Runtime.Caching;
 
 namespace Vidly.Controllers
 {
@@ -19,10 +20,21 @@ namespace Vidly.Controllers
         }
 
         public ViewResult Index()
-        {  
+        {
             //Ya no necesita pasar el modelo a la vista, porque la vista obtiene la data desde la API .
             //var movies = _context.Movies.Include(c => c.Genre).ToList();
 
+            // Data Caching (solo despues de Performance Profile, y solo para data que se despliega, no data a modificar). 
+            if (MemoryCache.Default["Genres"] == null)
+            {
+                MemoryCache.Default["Genres"] = _context.Genres.ToList();
+            }
+
+            var genres = MemoryCache.Default["Genres"] as IEnumerable<Genre>;
+
+
+            
+            //Perfilar vista por rol
             if (User.IsInRole(RoleName.CanManageMovies))
                 return View("List");
 

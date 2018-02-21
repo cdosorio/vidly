@@ -9,6 +9,10 @@ namespace Vidly.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
+        [OutputCache(Duration =50, Location = System.Web.UI.OutputCacheLocation.Server, VaryByParam ="genre")]
+        //Permite guardar el HTML generado en Cache, cuando es HTML que no varia mucho. 
+        //Si depende de todos los parámetros, usar varyByParam="*"
+        //Para deshabilitar el cache: [OutputCache(Duration = 0, VaryByParam = "*", NoStore = true)]
         public ActionResult Index()
         {
             return View();

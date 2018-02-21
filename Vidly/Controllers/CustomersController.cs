@@ -6,6 +6,7 @@ using System.Data.Entity;
 using Vidly.ViewModels;
 using System.Net;
 
+
 namespace Vidly.Controllers
 {
     public class CustomersController : Controller
@@ -21,11 +22,12 @@ namespace Vidly.Controllers
         {
             //solo se ejecuta cuando se llama a ToList, lo cual es recomendable hacerlo acá y no en la vista
             // https://stackoverflow.com/questions/17516911/applying-a-tolist-on-the-controller-versus-retrieving-the-data-from-the-view)
-           
+
             //var customers = _context.Customers.Include(c => c.MembershipType).ToList();
             //return View(customers);
 
-            //Usando el plugin Datatable de Jquery, la acción ya no necesita enviar la lista de customer, pq se obtendrá desde la API.
+            //Usando el plugin Datatable de Jquery, la acción ya no necesita enviar la lista de customer, pq se obtendrá desde la API.            
+                        
             return View();
         }
 
