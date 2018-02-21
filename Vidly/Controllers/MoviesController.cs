@@ -55,7 +55,7 @@ namespace Vidly.Controllers
             return View("MovieForm", viewModel);
         }
 
-
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Edit(int id)
         {
             var movie = _context.Movies.SingleOrDefault(c => c.Id == id);
@@ -70,6 +70,7 @@ namespace Vidly.Controllers
             return View("MovieForm", viewModel);
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         [HttpPost]
         public ActionResult Save(Movie movie)
         {
@@ -100,13 +101,14 @@ namespace Vidly.Controllers
                 //approach de Microsoft
                 //TryUpdateModel(customerInDb); 
 
-                //approach Mosh
+                //approach básico de Mosh
                 movieInDb.Name = movie.Name;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
                 movieInDb.GenreId = movie.GenreId;
                 movieInDb.NumberInStock = movie.NumberInStock;
 
-                //tercer approach, usar automapper y en vez de parámetro Customer, pasar CustomerDTO, con solo los campos actualizables.
+                //approach avanzado de Mosh: usar automapper y en vez de parámetro Movie, pasar MovieDTO, con solo los campos actualizables.
+                //Ver ejemplo en el API Controller
 
             }
 

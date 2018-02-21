@@ -107,13 +107,14 @@ namespace Vidly.Controllers
                 //approach de Microsoft
                 //TryUpdateModel(customerInDb); 
 
-                //approach Mosh
+                //approach básico de Mosh
                 customerInDb.Name = customer.Name;
                 customerInDb.Birthday = customer.Birthday;
                 customerInDb.MembershipTypeId = customer.MembershipTypeId;
                 customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
 
-                //tercer approach, usar automapper y en vez de parámetro Customer, pasar CustomerDTO, con solo los campos actualizables.
+                //approach avanzado de Mosh: usar automapper y en vez de parámetro Customer, pasar CustomerDTO, con solo los campos actualizables.
+                //Ver ejemplo en el API Controller
 
             }
 
