@@ -26,6 +26,9 @@ namespace Vidly.Models
         [Range(1,20, ErrorMessage = "Stock must be between 1 and 20")]
         [Display(Name = "Stock")]
         public int NumberInStock { get; set; }
-        
+                
+        [Display(Name = "Stock Available")]
+        public int NumberAvailable { get; set; }
+
     }
 }

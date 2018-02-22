@@ -88,22 +88,23 @@ namespace Vidly.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var message = string.Join(" | ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, message);
+                //var message = string.Join(" | ", ModelState.Values
+                //    .SelectMany(v => v.Errors)
+                //    .Select(e => e.ErrorMessage));
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest, message);                            
 
-                //var viewModel = new MovieFormViewModel
-                //{
-                //    Movie = movie,
-                //    Genres = _context.Genres.ToList()
-                //};
-                //return View("MovieForm", viewModel);
+                var viewModel = new MovieFormViewModel
+                {
+                    Movie = movie,                    
+                    Genres = _context.Genres.ToList()
+                };
+                return View("MovieForm", viewModel);
             }
 
             if (movie.Id == 0)
             {
                 movie.DateAdded = DateTime.Today;
+                movie.NumberAvailable = movie.NumberInStock;
                 _context.Movies.Add(movie);
             }
             else
@@ -118,7 +119,7 @@ namespace Vidly.Controllers
                 movieInDb.ReleaseDate = movie.ReleaseDate;
                 movieInDb.GenreId = movie.GenreId;
                 movieInDb.NumberInStock = movie.NumberInStock;
-
+                
                 //approach avanzado de Mosh: usar automapper y en vez de parámetro Movie, pasar MovieDTO, con solo los campos actualizables.
                 //Ver ejemplo en el API Controller
 

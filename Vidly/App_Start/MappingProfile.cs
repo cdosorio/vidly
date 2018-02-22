@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Vidly.Dtos;
 using Vidly.Models;
 
@@ -16,11 +12,11 @@ namespace Vidly.App_Start
             Mapper.CreateMap<Customer, CustomerDto>();
             Mapper.CreateMap<Movie, MovieDto>();
             Mapper.CreateMap<MembershipType, MembershipTypeDto>();
-            Mapper.CreateMap<Genre, GenreDto>();
+            Mapper.CreateMap<Genre, GenreDto>();           
 
-            // Dto to Domain
+            // Dto to Domain (solo necesario para entidades que se crearán mediante la API)
             Mapper.CreateMap<CustomerDto, Customer>().ForMember(m => m.Id, opt => opt.Ignore());
-            Mapper.CreateMap<MovieDto, Movie>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<MovieDto, Movie>().ForMember(m => m.Id, opt => opt.Ignore());           
 
         }
     }

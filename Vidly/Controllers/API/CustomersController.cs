@@ -20,12 +20,17 @@ namespace Vidly.Controllers.API
         }
 
         //GET /api/customers
-        public IHttpActionResult GetCustomer()
+        public IHttpActionResult GetCustomer(string query = null)
         {
-            var customerDtos =  _context.Customers
-                    .Include(c => c.MembershipType)
-                    .ToList()
-                    .Select(Mapper.Map<Customer, CustomerDto>);
+            var customersQuery = _context.Customers
+                    .Include(c => c.MembershipType);
+
+            if (!String.IsNullOrWhiteSpace(query))
+                customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+            
+            var customerDtos = customersQuery
+                   .ToList()
+                   .Select(Mapper.Map<Customer, CustomerDto>);
 
             return Ok(customerDtos);
         }
@@ -38,14 +43,14 @@ namespace Vidly.Controllers.API
             if (customer == null)
                 return NotFound();
 
-            return Ok(Mapper.Map<Customer,CustomerDto>(customer));
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
         }
 
         //POST /api/customers
         [HttpPost]
         public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
-            if (!ModelState.IsValid)                
+            if (!ModelState.IsValid)
                 return BadRequest();
 
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
@@ -69,7 +74,7 @@ namespace Vidly.Controllers.API
             if (customerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            Mapper.Map(customerDto, customerInDb);            
+            Mapper.Map(customerDto, customerInDb);
 
             _context.SaveChanges();
         }
@@ -77,7 +82,7 @@ namespace Vidly.Controllers.API
         //DELETE /api/customers/1
         [HttpDelete]
         public IHttpActionResult DeleteCustomer(int id)
-        { 
+        {
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customerInDb == null)
