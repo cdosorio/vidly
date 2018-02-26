@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Vidly.Models.Rental>
+
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>Rentals</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table id="rentals" class="table table-bordered table-hover">
+    <tr>
+        <th>Customer</th>
+        <th>Movie</th>
+        <th>Date Rented</th>
+        <th>Date Returned</th>
+        <th></th>
+    </tr>
+    <tbody></tbody>
+</table>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var table = $("#rentals").DataTable({
+                ajax: {
+                    url: "/api/rentals",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "customer.name"                        
+                    },
+                    {
+                        data: "movie.name"
+                    },
+                    {
+                        data: "DateRented"
+                    },
+                    {
+                        data: "DateReturned"
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<button  class='btn-link js-markAsReturn' data-rental-id=" + data + ">Mark as returned</button>";
+                        }
+                    }
+                ]
+            });
+
+
+            $("#movies").on("click", ".js-markAsReturn", function () {
+                var button = $(this);
+
+                bootbox.confirm("Are you sure you want to mark as returned this rental?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/movies/" + button.attr("data-rental-id"),
+                            method: "PUT",
+                            success: function () {
+                                //table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                })
+            });
+        });
+    </script>
+}

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System;
+using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -15,6 +16,28 @@ namespace Vidly.Controllers.API
         public RentalsController()
         {
             _context = new ApplicationDbContext();
+        }
+
+        //GET /api/rentals
+        public IHttpActionResult GetRental( 
+            string queryCustomerName = null,
+            string queryMovieName = null)
+        {
+            var rentalsQuery = _context.Rentals
+                    .Include(r => r.Customer)
+                    .Include(r => r.Movie);
+
+            if (!String.IsNullOrWhiteSpace(queryCustomerName))
+                rentalsQuery = rentalsQuery.Where(c => c.Customer.Name.Contains(queryCustomerName));
+
+            if (!String.IsNullOrWhiteSpace(queryMovieName))
+                rentalsQuery = rentalsQuery.Where(c => c.Movie.Name.Contains(queryMovieName));
+
+            var rentalDtos = rentalsQuery
+                   .ToList()
+                   .Select(Mapper.Map<Rental, RentalDto>);
+
+            return Ok(rentalDtos);
         }
 
         [HttpPost]

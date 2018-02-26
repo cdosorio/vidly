@@ -10,7 +10,9 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Genre</th>           
+            <th>Genre</th>
+            <th>Stock</th>
+            <th>Available</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -27,12 +29,17 @@
                 },
                 columns: [
                     {
-                        data: "name"
-                        
+                        data: "name"                        
                     },
                     {
                         data: "genre.name"
-                    }                    
+                    },
+                    {
+                        data: "numberInStock"
+                    },
+                    {
+                        data: "numberAvailable"
+                    }
                 ]
             });
                                    
