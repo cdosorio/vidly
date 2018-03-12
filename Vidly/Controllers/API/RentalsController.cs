@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using System;
 using System.Data.Entity;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Vidly.Dtos;
@@ -41,22 +40,22 @@ namespace Vidly.Controllers.API
         }
 
         [HttpPost]
-        public IHttpActionResult CreateRental(RentalDto rentalDto)
+        public IHttpActionResult CreateRental(ListRentalDto listRentalDto)
         {
 
-            if (rentalDto.MovieIds.Count == 0)
+            if (listRentalDto.MovieIds.Count == 0)
                 return BadRequest("No movies Ids has been given");
 
             var customer = _context.Customers.SingleOrDefault(
-                        c => c.Id == rentalDto.CustomerId);
+                        c => c.Id == listRentalDto.CustomerId);
 
             if (customer == null)
                 return BadRequest("CustomerId is not valid");
             
             var movies = _context.Movies.Where(
-                        m => rentalDto.MovieIds.Contains(m.Id));
+                        m => listRentalDto.MovieIds.Contains(m.Id));
 
-            if (movies.Count() != rentalDto.MovieIds.Count)
+            if (movies.Count() != listRentalDto.MovieIds.Count)
                 return BadRequest("One or more MovieIds are invalid");
 
 
