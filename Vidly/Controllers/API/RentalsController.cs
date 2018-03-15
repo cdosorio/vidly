@@ -19,18 +19,20 @@ namespace Vidly.Controllers.API
 
         //GET /api/rentals
         public IHttpActionResult GetRental( 
-            string queryCustomerName = null,
-            string queryMovieName = null)
+            string customerName = null,
+            string movieName = null)
         {
             var rentalsQuery = _context.Rentals
                     .Include(r => r.Customer)
                     .Include(r => r.Movie);
 
-            if (!String.IsNullOrWhiteSpace(queryCustomerName))
-                rentalsQuery = rentalsQuery.Where(c => c.Customer.Name.Contains(queryCustomerName));
+            if (!String.IsNullOrWhiteSpace(customerName))
+                rentalsQuery = rentalsQuery.Where(c => c.Customer.Name.Contains(customerName));
 
-            if (!String.IsNullOrWhiteSpace(queryMovieName))
-                rentalsQuery = rentalsQuery.Where(c => c.Movie.Name.Contains(queryMovieName));
+            if (!String.IsNullOrWhiteSpace(movieName))
+                rentalsQuery = rentalsQuery.Where(c => c.Movie.Name.Contains(movieName));
+
+            _context.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
 
             var rentalDtos = rentalsQuery
                    .ToList()

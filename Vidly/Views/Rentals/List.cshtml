@@ -9,6 +9,15 @@
 <p>
     @Html.ActionLink("New Rental", "New", "Rentals", null, new { @class = "btn btn-primary" })
 </p>
+<hr />
+<h5>Filtros para AJAX -> WEB API</h5>
+Customer name: 
+@Html.TextBox("CustomerName", "carlos osorio")
+<br />
+Movie name:
+@Html.TextBox("MovieName", "robocop")
+<br />
+<hr />
 <table id="rentals" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -27,14 +36,20 @@
 {
     <script>
         $(document).ready(function () {
+
+            var CustomerName = $('#CustomerName').val();
+            //alert(CustomerName);
+            var MovieName = $('#MovieName').val();
+            //alert(MovieName);
+
             var table = $("#rentals").DataTable({
                 ajax: {
-                    url: "/api/rentals",
+                    url: "/api/rentals?customerName=" + CustomerName + "&movieName=" + MovieName,
                     dataSrc: ""
                 },
                 columns: [
                     {
-                        data: "customer.name"                        
+                        data: "customer.name"
                     },
                     {
                         data: "movie.name"
@@ -44,7 +59,7 @@
                         render: function (data) {
                             var date = new Date(data);
                             var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.length > 1 ? month : "0" + month)  +  "/" + date.getFullYear();
+                            return date.getDate() + "/" + (month.length > 1 ? month : "0" + month) + "/" + date.getFullYear();
                         }
                     },
                     {
