@@ -7,16 +7,18 @@
 <h2>Rentals</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("New Rental", "New", "Rentals", null, new { @class = "btn btn-primary" })
 </p>
 <table id="rentals" class="table table-bordered table-hover">
-    <tr>
-        <th>Customer</th>
-        <th>Movie</th>
-        <th>Date Rented</th>
-        <th>Date Returned</th>
-        <th></th>
-    </tr>
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Movie</th>
+            <th>Date Rented</th>
+            <th>Date Returned</th>
+            <th></th>
+        </tr>
+    </thead>
     <tbody></tbody>
 </table>
 
@@ -38,10 +40,24 @@
                         data: "movie.name"
                     },
                     {
-                        data: "DateRented"
+                        data: "dateRented",
+                        render: function (data) {
+                            var date = new Date(data);
+                            var month = date.getMonth() + 1;
+                            return date.getDate() + "/" + (month.length > 1 ? month : "0" + month)  +  "/" + date.getFullYear();
+                        }
                     },
                     {
-                        data: "DateReturned"
+                        data: "dateReturned",
+                        render: function (value) {
+                            if (value === null) return "";
+
+                            var pattern = /Date\(([^)]+)\)/;
+                            var results = pattern.exec(value);
+                            var dt = new Date(parseFloat(results[1]));
+
+                            return date.getDate() + "/" + (month.length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                        }
                     },
                     {
                         data: "id",
