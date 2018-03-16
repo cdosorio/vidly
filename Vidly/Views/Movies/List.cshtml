@@ -25,9 +25,14 @@
     <script>
         $(document).ready(function () {
             var table = $("#movies").DataTable({
+                processing: true,
+                serverSide: true,
+                ordering: true,
+                paging: true,
+                searching: true,
                 ajax: {
-                    url: "/api/movies",
-                    dataSrc: ""
+                    url: "/api/movies"
+                    //dataSrc: ""
                 },
                 columns: [
                     {

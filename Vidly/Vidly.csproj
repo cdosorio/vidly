@@ -287,6 +287,12 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DataTables\DataTableColumn.cs" />
+    <Compile Include="Models\DataTables\DataTableModelBinder.cs" />
+    <Compile Include="Models\DataTables\DataTableOrder.cs" />
+    <Compile Include="Models\DataTables\DataTableRequest.cs" />
+    <Compile Include="Models\DataTables\DataTableResponse.cs" />
+    <Compile Include="Models\DataTables\DataTableSearch.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

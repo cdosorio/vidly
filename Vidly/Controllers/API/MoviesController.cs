@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Http;
 using Vidly.Dtos;
 using Vidly.Models;
+using Vidly.Models.DataTables;
 
 namespace Vidly.Controllers.Api
 {
@@ -18,21 +19,92 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
 
-        public IHttpActionResult GetMovies(string query = null)
+        public DataTableResponse GetMovies(DataTableRequest request)
         {
-            var moviesQuery = _context.Movies
+            var movies = _context.Movies
                 .Include(m => m.Genre)
                 .Where(m => m.NumberAvailable > 0);
 
-            //Puede modificar la query antes de llamar a ToList
-            if (!String.IsNullOrWhiteSpace(query))
-                moviesQuery = moviesQuery.Where(m => m.Name.Contains(query));                     
 
-            var movieDtos = moviesQuery
-                   .ToList()
-                   .Select(Mapper.Map<Movie, MovieDto>);
+            // Begin Filtering
+            IEnumerable<Movie> filteredMovies;
 
-            return Ok(movieDtos);
+            if (request.Search.Value != "")
+            {
+                var searchText = request.Search.Value.Trim();
+                filteredMovies = movies
+                        .Where(m => m.Name.Contains(searchText) || m.Genre.Name.Contains(searchText));
+            }
+            else
+            {
+                filteredMovies = movies;
+            }
+            // End Filtering
+
+
+            // Begin Sorting
+            if (request.Order.Any())
+            {
+                int sortColumnIndex = request.Order[0].Column;
+                string sortDirection = request.Order[0].Dir;
+
+                Func<Movie, string> orderingFunctionString = null;
+                Func<Movie, int> orderingFunctionInt = null;
+                //Func<Movie, decimal?> orderingFunctionDecimal = null;
+
+                switch (sortColumnIndex)
+                {                   
+                    case 0:     // MovieName
+                        {
+                            orderingFunctionString = (c => c.Name);
+                            filteredMovies =
+                                sortDirection == "asc"
+                                    ? filteredMovies.OrderBy(orderingFunctionString)
+                                    : filteredMovies.OrderByDescending(orderingFunctionString);
+                            break;
+                        }
+                    case 1:     // GenreName
+                        {
+                            orderingFunctionString = (c => c.Genre.Name);
+                            filteredMovies =
+                                sortDirection == "asc"
+                                    ? filteredMovies.OrderBy(orderingFunctionString)
+                                    : filteredMovies.OrderByDescending(orderingFunctionString);
+                            break;
+                        }
+                    case 2:     // UnitsInStock
+                        {
+                            orderingFunctionInt = (c => c.NumberInStock);
+                            filteredMovies =
+                                sortDirection == "asc"
+                                    ? filteredMovies.OrderBy(orderingFunctionInt)
+                                    : filteredMovies.OrderByDescending(orderingFunctionInt);
+                            break;
+                        }
+                }
+            }
+
+
+            //End Sorting
+
+            
+
+            // Paging Data
+            var pagedMovies = filteredMovies.Skip(request.Start).Take(request.Length);
+
+                        
+            var movieDtos = pagedMovies
+                               .ToList()
+                               .Select(Mapper.Map<Movie, MovieDto>);
+
+            return new DataTableResponse
+            {
+                draw = request.Draw,
+                recordsTotal = movies.Count(),
+                recordsFiltered = movies.Count(),
+                data = movieDtos.ToArray(),
+                error = ""
+            };
         }
 
         public IHttpActionResult GetMovie(int id)
