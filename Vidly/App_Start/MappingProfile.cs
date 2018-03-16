@@ -15,9 +15,10 @@ namespace Vidly.App_Start
             Mapper.CreateMap<Genre, GenreDto>();
             Mapper.CreateMap<Rental, RentalDto>();
 
-            // Dto to Domain (solo necesario para entidades que se crearán mediante la API)
+            // Dto to Domain (solo necesario para entidades que se crearán/actualizarán mediante la API)
             Mapper.CreateMap<CustomerDto, Customer>().ForMember(m => m.Id, opt => opt.Ignore());
-            Mapper.CreateMap<MovieDto, Movie>().ForMember(m => m.Id, opt => opt.Ignore());           
+            Mapper.CreateMap<MovieDto, Movie>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<RentalDto, Rental>().ForMember(m => m.Id, opt => opt.Ignore());
 
         }
     }

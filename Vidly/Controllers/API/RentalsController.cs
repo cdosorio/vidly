@@ -82,6 +82,28 @@ namespace Vidly.Controllers.API
 
             return Ok();
         }
+
+        [HttpPut]
+        public IHttpActionResult MarkAsReturned(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var rentalInDb = _context.Rentals.Include(r => r.Customer).Include(r => r.Movie).SingleOrDefault(c => c.Id == id);
+
+            if (rentalInDb == null)
+                return NotFound();
+
+            //retornar al stock
+            var movie = _context.Movies.SingleOrDefault(m => m.Id == rentalInDb.Movie.Id);
+            movie.NumberAvailable++;
+
+            rentalInDb.DateReturned = DateTime.Now;
+
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }
 

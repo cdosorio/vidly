@@ -9,15 +9,20 @@
 <p>
     @Html.ActionLink("New Rental", "New", "Rentals", null, new { @class = "btn btn-primary" })
 </p>
-<hr />
-<h5>Filtros para AJAX -> WEB API</h5>
-Customer name: 
-@Html.TextBox("CustomerName", "carlos osorio")
+<div class="row">
+    <div class="col-md-4">
+        Customer name:
+        @Html.TextBox("CustomerName", "")
+    </div>
+    <div class="col-md-4">
+        Movie name:
+        @Html.TextBox("MovieName", "")
+    </div>
+    <div class="col-md-4">
+        <button type="button" id="btnGetRentals">Filtrar en servidor(AJAX -> WEB API)</button>
+    </div>
+</div>
 <br />
-Movie name:
-@Html.TextBox("MovieName", "robocop")
-<br />
-<hr />
 <table id="rentals" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -35,14 +40,12 @@ Movie name:
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-
+        function fillDatatable() {
             var CustomerName = $('#CustomerName').val();
-            //alert(CustomerName);
             var MovieName = $('#MovieName').val();
-            //alert(MovieName);
 
             var table = $("#rentals").DataTable({
+                bDestroy: true,
                 ajax: {
                     url: "/api/rentals?customerName=" + CustomerName + "&movieName=" + MovieName,
                     dataSrc: ""
@@ -63,41 +66,51 @@ Movie name:
                         }
                     },
                     {
-                        data: "dateReturned",
-                        render: function (value) {
-                            if (value === null) return "";
+                        data: "dateReturned",                        
+                        render: function (data) {
+                            if (data === null) return "";
 
-                            var pattern = /Date\(([^)]+)\)/;
-                            var results = pattern.exec(value);
-                            var dt = new Date(parseFloat(results[1]));
-
+                            var date = new Date(data);
+                            var month = date.getMonth() + 1;
                             return date.getDate() + "/" + (month.length > 1 ? month : "0" + month) + "/" + date.getFullYear();
                         }
                     },
                     {
                         data: "id",
-                        render: function (data) {
+                        render: function (data, type, row, meta) {
+                            if (row.dateReturned !== null) return "";
+
                             return "<button  class='btn-link js-markAsReturn' data-rental-id=" + data + ">Mark as returned</button>";
                         }
                     }
                 ]
             });
+        }
 
+        $(document).ready(function () {
 
-            $("#movies").on("click", ".js-markAsReturn", function () {
+            fillDatatable();
+
+            $("#rentals").on("click", ".js-markAsReturn", function () {
                 var button = $(this);
 
                 bootbox.confirm("Are you sure you want to mark as returned this rental?", function (result) {
                     if (result) {
                         $.ajax({
-                            url: "/api/movies/" + button.attr("data-rental-id"),
+                            url: "/api/rentals/" + button.attr("data-rental-id"),
                             method: "PUT",
                             success: function () {
                                 //table.row(button.parents("tr")).remove().draw();
+                                fillDatatable();
                             }
                         });
                     }
                 })
+            });
+
+
+            $("#btnGetRentals").click(function () {
+                fillDatatable();
             });
         });
     </script>
