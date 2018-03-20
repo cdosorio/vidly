@@ -9,6 +9,9 @@ namespace Vidly.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HomeController));
+
+
         [OutputCache(Duration =50, Location = System.Web.UI.OutputCacheLocation.Server, VaryByParam ="genre")]
         //Permite guardar el HTML generado en Cache, cuando es HTML que no varia mucho. 
         //Si depende de todos los parámetros, usar varyByParam="*"
@@ -20,8 +23,10 @@ namespace Vidly.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            logger.Info("Visita a About view");
 
+            ViewBag.Message = "Your application description page.";
+            
             return View();
         }
 
